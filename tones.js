@@ -1,5 +1,9 @@
 const origin = 440;
 const halfToneDifference = (Math.pow(2, 1 / 12));
+const instrument = {
+    type: 'sine',
+    bpm: 60
+}
 
 function getOctave(dif) {
     let octaveDifference;
@@ -33,14 +37,22 @@ function makeTone(frequency, fraction = 1) {
     return new Promise((resolve) => {
         let context = new AudioContext();
         let o = context.createOscillator();
+        let stopped = false;
         o.frequency.value = frequency;
-        o.type = "sine";
+        o.type = instrument.type;
         o.connect(context.destination);
         o.start();
-        setTimeout(() => {
+        instrument.stop = () => {
             o.stop();
+            stopped = true;
+            reject();
+        };
+        setTimeout(() => {
+            if (stopped) return;
+            o.stop();
+            instrument.stop = () => { };
             resolve();
-        }, 1000 / fraction);
+        }, (60000 / instrument.bpm) / fraction);
     });
 }
 
@@ -48,17 +60,18 @@ function parseSequence(notes) {
     noteArray = notes.split(' ');
     notePromises = noteArray.map((note) => {
         let split;
-        if (note.match(/^\D[# b]?$/)) { //simple note
-            return makeTone.bind(this, getOctave(0)[note]);
-        } else if (note.match(/^(\D[# b]?)(\d+)$/)) { //defined octave
-            split = note.match(/^(\D[# b]?)(\d+)$/);
-            return makeTone.bind(this, getOctave(split[2])[split[1]]);
-        } else if (note.match(/^(\D[# b]?)\/(\d+)$/)) { //defined fraction
-            split = note.match(/^(\D[# b]?)\/(\d+)$/);
-            return makeTone.bind(this, getOctave(0)[split[1]], split[2]);
-        } else if (note.match(/^(\D[# b]?)(\d+)\/(\d+)$/)) { //defined octave and fraction
-            split = note.match(/^(\D[# b]?)(\d+)\/(\d+)$/);
-            return makeTone.bind(this, getOctave(split[2])[split[1]], split[3]);
+        if (note.match(/^(\D[# b]?)(.)?$/)) { //simple note
+            split = note.match(/^(\D[# b]?)(.)?$/);
+            return makeTone.bind(this, getOctave(0)[split[1]], 1 / (split[2] ? 1.5 : 1));
+        } else if (note.match(/^(\D[# b]?)(\d+)(\.)?$/)) { //defined octave
+            split = note.match(/^(\D[# b]?)(\d+)(\.)?$/);
+            return makeTone.bind(this, getOctave(split[2])[split[1]], 1 / (split[4] ? 1.5 : 1));
+        } else if (note.match(/^(\D[# b]?)\/(\d+)(\.)?$/)) { //defined fraction
+            split = note.match(/^(\D[# b]?)\/(\d+)(\.)?$/);
+            return makeTone.bind(this, getOctave(0)[split[1]], split[2] / (split[3] ? 1.5 : 1));
+        } else if (note.match(/^(\D[# b]?)(\d+)\/(\d+)(\.)?$/)) { //defined octave and fraction
+            split = note.match(/^(\D[# b]?)(\d+)\/(\d+)(\.)?$/);
+            return makeTone.bind(this, getOctave(split[2])[split[1]], split[3] / (split[4] ? 1.5 : 1));
         }
     })
 

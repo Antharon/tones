@@ -8,9 +8,28 @@
 
 <body>
     <form>
-        <input name="song" type="text"
-            value="b/2 b/2 a g x/2 b/2 b/2 a g x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a d1 x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a g">
-        <button name="play" type="button">PLAY</button>
+        <p>
+            <label for="instrument">Instrument:</label>
+            <select name="instrument">
+                <option value="sine">Sine</option>
+                <option value="triangle">Triangle</option>
+                <option value="square">Square</option>
+                <option value="sawtooth">Sawtooth</option>
+            </select>
+        </p>
+        <p>
+            <label for="bpm">BPM:</label>
+            <input type="number" name="bpm" value="60">
+        </p>
+        <p>
+            <label for="song">Song:</label>
+            <input name="song" type="text"
+                value="b/2 b/2 a g. x/2 b/2 b/2 a g. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a d1. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a g">
+        </p>
+        <p>
+            <button name="play" type="button">START</button>
+            <button name="stop" type="button">STOP</button>
+        </p>
     </form>
     <script src="sound.js"></script>
 </body>
