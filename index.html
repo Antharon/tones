@@ -9,22 +9,39 @@
 <body>
     <form>
         <p>
-            <label for="instrument">Instrument:</label>
-            <select name="instrument">
+            <label for="melodyInstrument">Melody instrument:</label>
+            <select name="melodyInstrument">
                 <option value="sine">Sine</option>
+                <option value="triangle">Triangle</option>
+                <option value="square">Square</option>
+                <option selected value="sawtooth">Sawtooth</option>
+            </select>
+            <input type="number" name="octave" value="1">
+            <br>
+            <label for="bassInstrument">Bass instrument:</label>
+            <select name="bassInstrument">
+                <option selected value="sine">Sine</option>
                 <option value="triangle">Triangle</option>
                 <option value="square">Square</option>
                 <option value="sawtooth">Sawtooth</option>
             </select>
+            <input type="number" name="octave2" value="-1">
         </p>
         <p>
             <label for="bpm">BPM:</label>
             <input type="number" name="bpm" value="60">
         </p>
         <p>
-            <label for="song">Song:</label>
+            <label for="song">Melody part:</label>
             <input name="song" type="text"
-                value="b/2 b/2 a g. x/2 b/2 b/2 a g. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a d1. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a g">
+                valueX="b/2 b/2 a g. x/2 b/2-b/2-a-g. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a d1. x/2 g/2 b/2 g/2 b/2 g b c1/2 b/2 a g"
+                valueX="a/2 c#1/4-d1/4 a/2 c1/4-d1/4 c1/2 d1 c1/2 g#/4-a/4 c#1/2 d1 c1/2 g."
+                valueX="f/2 g#/2 g/2 f/2 f#/2 g#/2 a/2 c#1/2 e1/2 c1/2 d#1/2 b/2 f#/2 e/2 d#/2 b."
+                value="c1-c1/2 c1/4 b/4 c1-c1/2 c1/4 b/4 c1/2. d1/4 d1/2. f1/4 f1-f1/2 e1/4 c1/4 d1/2. b/4 g/4 x/4 e1/4 c1/4 d1 x/2 g1/4 c1/4 f1/2. e1/4 e1/2. d1/4 d1 x/2 c1/4 b/4 c1-c1/2 c1/4 b/4 c1-c1/2 c1/4 b/4 c1/2. d1/4 d1/2. f1/4 f1-f1/2 e1/4 c1/4 d1/2. b/4 g/4 x/4 e1/4 c1/4 d1 x/2 g1/4 c1/4 f1/2. e1/4 e1/2. d1/4 d1 x/2 c2/4 b1/4">
+            <br>
+            <label for="song2">Bass part:</label>
+            <input name="song2" type="text"
+                value="c1-c1/2 c1/2 f-f/2 f/2 c1 c1 c1-c1/2 c1/2 g-g/2 c1/2 g-g f g g-g c1-c1/2 c1/2 f-f/2 f/2 c1 c1 c1-c1/2 c1/2 g-g/2 c1/2 g-g f g g-g">
         </p>
         <p>
             <button name="play" type="button">START</button>
