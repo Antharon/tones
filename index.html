@@ -3,6 +3,7 @@
 
 <head>
     <script src="promiseHelpers.js"></script>
+    <script src="adsr-envelope.js"></script>
     <script src="tones.js"></script>
 </head>
 
@@ -16,7 +17,7 @@
                 <option value="square">Square</option>
                 <option selected value="sawtooth">Sawtooth</option>
             </select>
-            <input type="number" name="octave" value="1">
+            <input type="number" name="octave" value="0">
             <br>
             <label for="bassInstrument">Bass instrument:</label>
             <select name="bassInstrument">
@@ -25,7 +26,7 @@
                 <option value="square">Square</option>
                 <option value="sawtooth">Sawtooth</option>
             </select>
-            <input type="number" name="octave2" value="-1">
+            <input type="number" name="octave2" value="-2">
         </p>
         <p>
             <label for="bpm">BPM:</label>

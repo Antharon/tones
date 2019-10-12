@@ -3,11 +3,7 @@ const halfToneDifference = (Math.pow(2, 1 / 12));
 
 function getOctave(dif) {
     let octaveDifference;
-    if (dif >= 0) {
-        octaveDifference = 1 * Math.pow(halfToneDifference, 12 * dif);
-    } else {
-        octaveDifference = 1 * Math.pow(halfToneDifference, 12 / (0 - dif));
-    }
+    octaveDifference = 1 * Math.pow(halfToneDifference, 12 * dif);
 
     return {
         'c': origin * octaveDifference * Math.pow(1 / halfToneDifference, 9),
@@ -29,10 +25,8 @@ function getOctave(dif) {
 function shiftOctave(frequency, dif) {
     if (dif === 0) {
         return frequency;
-    } else if (dif > 0) {
+    } else {
         return frequency * Math.pow(halfToneDifference, 12 * dif)
-    } else if (dif < 0) {
-        return frequency * Math.pow(halfToneDifference, 12 / (0 - dif));
     }
 }
 
@@ -42,9 +36,19 @@ function makeTone(frequency, fraction = 1, instrument) {
         let context = new AudioContext();
         let o = context.createOscillator();
         let stopped = false;
+
+        let gain = context.createGain();
+        let adsr = new ADSREnvelope({
+            ...instrument.envelope,
+            gateTime: (60000 / instrument.bpm) / fraction
+        });
+
+        adsr.applyTo(gain.gain, context.currentTime);
+
         o.frequency.value = shiftOctave(frequency, instrument.octave);
         o.type = instrument.type;
-        o.connect(context.destination);
+        o.connect(gain);
+        gain.connect(context.destination);
         o.start();
         instrument.stop = () => {
             o.stop();
@@ -56,8 +60,17 @@ function makeTone(frequency, fraction = 1, instrument) {
             o.stop();
             instrument.stop = () => { };
             resolve();
-        }, (60000 / instrument.bpm) / fraction);
+        }, adsr.duration);
     });
+}
+
+function makeFakeLegato(fnf, instrument) {
+    sequence = [];
+    for (i = 0; i < fnf.length; i++) {
+        sequence.push(makeTone.bind(this, fnf[i][0], fnf[i][1], instrument));
+    }
+
+    return Promise.series(sequence);
 }
 
 function makeLegato(fnf, instrument) { //array of array, first is frequency, second is fraction
@@ -69,20 +82,30 @@ function makeLegato(fnf, instrument) { //array of array, first is frequency, sec
         let context = new AudioContext();
         let o = context.createOscillator();
         let stopped = false;
+
+        fullLength = 0;
+        for (let i = 0; i < fnf.length; i++) {
+            fullLength += (60000 / instrument.bpm) / fnf[i][1];
+        }
+
+        let gain = context.createGain();
+        let adsr = new ADSREnvelope({
+            ...instrument.envelope,
+            gateTime: fullLength
+        });
+
+        adsr.applyTo(gain.gain, context.currentTime);
+
         o.frequency.value = shiftOctave(fnf[0][0], instrument.octave);
         o.type = instrument.type;
-        o.connect(context.destination);
+        o.connect(gain);
+        gain.connect(context.destination);
         o.start();
         instrument.stop = () => {
             o.stop();
             stopped = true;
             reject();
         };
-
-        fullLength = 0;
-        for (let i = 0; i < fnf.length; i++) {
-            fullLength += (60000 / instrument.bpm) / fnf[i][1];
-        }
 
         setTimeout(() => {
             if (stopped) return;

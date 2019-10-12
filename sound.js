@@ -1,13 +1,38 @@
+const defautEnvelope = {
+    attackTime: 0.01,
+    decayTime: 0.5,
+    releaseTime: 1,
+    peakLevel: 1,
+    sustainLevel: 0.5,
+    attackCurve: 'lin',
+    decayCurve: 'lin',
+    releaseCurve: 'lin'
+}
+
 const melodyInstrument = {
     type: 'sawtooth',
     bpm: 60,
-    octave: 1
+    octave: 0,
+    envelope: {
+        ...defautEnvelope,
+        attackTime: 0.1,
+        releaseTime: 2,
+        sustainLevel: 0.1,
+        decayTime: 2,
+        decayCurve: 'exp',
+    }
 }
 
 const bassInstrument = {
     type: 'sine',
     bpm: 60,
-    octave: -1
+    octave: -2,
+    envelope: {
+        ...defautEnvelope,
+        decayTime: 1,
+        sustainLevel: 0.5,
+        attackTime: 0.001,
+    }
 }
 
 document.forms[0].play.addEventListener('click', () => {
